@@ -25,12 +25,23 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-/* 🎬 WELCOME SCREEN CONTROL */
+/* 🎬 WELCOME → AUTO SWITCH */
 window.onload = () => {
 setTimeout(()=>{
 document.getElementById("welcome").style.display="none";
 document.getElementById("authPage").classList.remove("hidden");
-},2500);
+},3000);
+}
+
+/* 🔄 SWITCH LOGIN / SIGNUP */
+window.showSignup = ()=>{
+loginBox.classList.add("hidden");
+signupBox.classList.remove("hidden");
+}
+
+window.showLogin = ()=>{
+signupBox.classList.add("hidden");
+loginBox.classList.remove("hidden");
 }
 
 /* SIGNUP */
@@ -39,11 +50,12 @@ window.signup = async ()=>{
 const user = await createUserWithEmailAndPassword(auth,email.value,pass.value);
 
 await set(ref(db,"users/"+user.user.uid),{
-email:email.value,
+name:name.value,
+username:username.value,
 balance:0
 });
 
-showMain(email.value,0);
+showMain(username.value,0);
 
 }
 
@@ -55,11 +67,11 @@ const user = await signInWithEmailAndPassword(auth,email.value,pass.value);
 const snap = await get(child(ref(db),"users/"+user.user.uid));
 const data = snap.val();
 
-showMain(data.email,data.balance);
+showMain(data.username,data.balance);
 
 }
 
-/* SHOW MAIN */
+/* MAIN SCREEN */
 function showMain(name,balance){
 
 document.getElementById("authPage").classList.add("hidden");
@@ -67,26 +79,25 @@ document.getElementById("mainPage").classList.remove("hidden");
 
 document.getElementById("user").innerText=name;
 document.getElementById("balance").innerText="$"+balance;
+
 }
 
-/* AD SYSTEM */
+/* AD */
 window.watchAd = ()=>{
 
-document.getElementById("ad").classList.remove("hidden");
+ad.classList.remove("hidden");
 
 let t=5;
 document.getElementById("t").innerText=t;
 
 let x=setInterval(()=>{
-
 t--;
 document.getElementById("t").innerText=t;
 
 if(t<=0){
 clearInterval(x);
-document.getElementById("close").classList.remove("hidden");
+close.classList.remove("hidden");
 }
-
 },1000);
 
 }
@@ -94,7 +105,7 @@ document.getElementById("close").classList.remove("hidden");
 /* REWARD */
 window.reward = async ()=>{
 
-document.getElementById("ad").classList.add("hidden");
+ad.classList.add("hidden");
 
 const user = auth.currentUser;
 
@@ -107,11 +118,11 @@ await update(ref(db,"users/"+user.uid),{
 balance:newBal
 });
 
-document.getElementById("balance").innerText="$"+newBal;
+balance.innerText="$"+newBal;
 
 }
 
-/* WITHDRAW FIXED */
+/* WITHDRAW */
 window.withdraw = async ()=>{
 
 const user = auth.currentUser;

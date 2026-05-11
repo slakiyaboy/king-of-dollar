@@ -15,109 +15,104 @@ update
 } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-database.js";
 
 const firebaseConfig = {
-apiKey: "YOUR_KEY",
-authDomain: "YOUR_DOMAIN",
-databaseURL: "YOUR_DB",
-projectId: "YOUR_PROJECT"
+apiKey:"YOUR_KEY",
+authDomain:"YOUR_DOMAIN",
+databaseURL:"YOUR_DB",
+projectId:"YOUR_ID"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-// UI
-window.goAuth = () => {
-document.getElementById("authPage").style.display="block";
+/* 🎬 WELCOME SCREEN CONTROL */
+window.onload = () => {
+setTimeout(()=>{
+document.getElementById("welcome").style.display="none";
+document.getElementById("authPage").classList.remove("hidden");
+},2500);
 }
 
-window.showSignup = () => {
-loginBox.classList.add("hidden");
-signupBox.classList.remove("hidden");
-}
-
-window.showLogin = () => {
-signupBox.classList.add("hidden");
-loginBox.classList.remove("hidden");
-}
-
-// SIGNUP
-window.signup = async () => {
+/* SIGNUP */
+window.signup = async ()=>{
 
 const user = await createUserWithEmailAndPassword(auth,email.value,pass.value);
 
 await set(ref(db,"users/"+user.user.uid),{
-name:name.value,
-username:username.value,
+email:email.value,
 balance:0
 });
 
-showMain(username.value,0);
+showMain(email.value,0);
 
 }
 
-// LOGIN
-window.login = async () => {
+/* LOGIN */
+window.login = async ()=>{
 
-const user = await signInWithEmailAndPassword(auth,loginEmail.value,loginPass.value);
+const user = await signInWithEmailAndPassword(auth,email.value,pass.value);
 
 const snap = await get(child(ref(db),"users/"+user.user.uid));
 const data = snap.val();
 
-showMain(data.username,data.balance);
+showMain(data.email,data.balance);
 
 }
 
+/* SHOW MAIN */
 function showMain(name,balance){
-authPage.style.display="none";
-mainPage.style.display="block";
+
+document.getElementById("authPage").classList.add("hidden");
+document.getElementById("mainPage").classList.remove("hidden");
 
 document.getElementById("user").innerText=name;
 document.getElementById("balance").innerText="$"+balance;
 }
 
-// AD SYSTEM
-window.watchAd = () => {
+/* AD SYSTEM */
+window.watchAd = ()=>{
+
+document.getElementById("ad").classList.remove("hidden");
 
 let t=5;
-adPopup.style.display="block";
+document.getElementById("t").innerText=t;
 
-timer.innerText=t;
+let x=setInterval(()=>{
 
-const x=setInterval(()=>{
 t--;
-timer.innerText=t;
+document.getElementById("t").innerText=t;
 
 if(t<=0){
 clearInterval(x);
-closeBtn.classList.remove("hidden");
+document.getElementById("close").classList.remove("hidden");
 }
+
 },1000);
 
 }
 
-// REWARD (basic)
-window.closeAd = async () => {
+/* REWARD */
+window.reward = async ()=>{
 
-adPopup.style.display="none";
-closeBtn.classList.add("hidden");
+document.getElementById("ad").classList.add("hidden");
 
 const user = auth.currentUser;
 
 const snap = await get(child(ref(db),"users/"+user.uid));
 const data = snap.val();
 
-const newBal = data.balance + 0.01;
+let newBal = data.balance + 0.01;
 
 await update(ref(db,"users/"+user.uid),{
 balance:newBal
 });
 
-balance.innerText="$"+newBal.toFixed(2);
+document.getElementById("balance").innerText="$"+newBal;
 
 }
 
-// WITHDRAW
-window.withdraw = async () => {
+/* WITHDRAW FIXED */
+window.withdraw = async ()=>{
 
 const user = auth.currentUser;
 
@@ -130,7 +125,7 @@ return;
 }
 
 await update(ref(db,"users/"+user.uid),{
-balance:data.balance-Number(amount.value)
+balance:data.balance - Number(amount.value)
 });
 
 await set(ref(db,"withdraws/"+Date.now()),{
@@ -139,5 +134,5 @@ amount:amount.value,
 status:"pending"
 });
 
-alert("Request Sent");
+alert("Sent");
 }

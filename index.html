@@ -2,333 +2,65 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>King Of Dollar</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="style.css">
 
-<script type="module">
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
-
-import {
-getAuth,
-createUserWithEmailAndPassword,
-signInWithEmailAndPassword
-} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
-
-import {
-getDatabase,
-ref,
-set,
-get,
-child,
-update
-} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-database.js";
-
-const firebaseConfig = {
-apiKey: "AIzaSyAifKKpluXjlOOjnhCSL2fSCj4urp5ZFN4",
-authDomain: "king-of-dollar.firebaseapp.com",
-databaseURL: "https://king-of-dollar-default-rtdb.asia-southeast1.firebasedatabase.app",
-projectId: "king-of-dollar",
-storageBucket: "king-of-dollar.firebasestorage.app",
-messagingSenderId: "289594893517",
-appId: "1:289594893517:web:c12a017bc02e06ca7cb584",
-measurementId: "G-LHHS2J9F20"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getDatabase(app);
-
-window.goAuth = function(){
-document.getElementById("welcomePage").style.display="none";
-document.getElementById("authPage").style.display="flex";
-}
-
-window.showSignup = function(){
-document.getElementById("loginBox").style.display="none";
-document.getElementById("signupBox").style.display="block";
-}
-
-window.showLogin = function(){
-document.getElementById("signupBox").style.display="none";
-document.getElementById("loginBox").style.display="block";
-}
-
-window.signup = async function(){
-
-const name=document.getElementById("signupName").value;
-const username=document.getElementById("signupUsername").value;
-const email=document.getElementById("signupEmail").value;
-const password=document.getElementById("signupPassword").value;
-
-if(!name || !username || !email || !password){
-alert("Fill all fields");
-return;
-}
-
-try{
-
-const userCredential=await createUserWithEmailAndPassword(auth,email,password);
-
-const user=userCredential.user;
-
-await set(ref(db,'users/'+user.uid),{
-name:name,
-username:username,
-email:email,
-balance:0
-});
-
-document.getElementById("authPage").style.display="none";
-document.getElementById("mainPage").style.display="block";
-
-document.getElementById("welcomeUser").innerText=username;
-
-document.getElementById("balance").innerText="$0.00";
-
-}catch(error){
-alert(error.message);
-}
-
-}
-
-window.login = async function(){
-
-const email=document.getElementById("loginEmail").value;
-const password=document.getElementById("loginPassword").value;
-
-try{
-
-const userCredential=await signInWithEmailAndPassword(auth,email,password);
-
-const user=userCredential.user;
-
-const dbRef=ref(db);
-
-get(child(dbRef,'users/'+user.uid)).then((snapshot)=>{
-
-if(snapshot.exists()){
-
-const data=snapshot.val();
-
-document.getElementById("authPage").style.display="none";
-document.getElementById("mainPage").style.display="block";
-
-document.getElementById("welcomeUser").innerText=data.username;
-
-document.getElementById("balance").innerText=
-"$"+Number(data.balance).toFixed(2);
-
-}
-
-});
-
-}catch(error){
-alert("Wrong Email or Password");
-}
-
-}
-
-window.watchAd = async function(){
-
-const adPopup=document.getElementById("adPopup");
-
-let time=5;
-
-adPopup.style.display="flex";
-
-document.getElementById("timer").innerText=time;
-
-const interval=setInterval(()=>{
-
-time--;
-
-document.getElementById("timer").innerText=time;
-
-if(time<=0){
-
-clearInterval(interval);
-
-document.getElementById("closeBtn").style.display="block";
-
-}
-
-},1000);
-
-}
-
-window.closeAd = async function(){
-
-document.getElementById("adPopup").style.display="none";
-
-document.getElementById("closeBtn").style.display="none";
-
-const user=auth.currentUser;
-
-const dbRef=ref(db);
-
-const snapshot=await get(child(dbRef,'users/'+user.uid));
-
-const data=snapshot.val();
-
-const newBalance=Number(data.balance)+0.01;
-
-await update(ref(db,'users/'+user.uid),{
-balance:newBalance
-});
-
-document.getElementById("balance").innerText=
-"$"+newBalance.toFixed(2);
-
-alert("$0.01 Added");
-
-}
-
-window.withdraw = async function(){
-
-const amount=Number(document.getElementById("withdrawAmount").value);
-
-const binance=document.getElementById("binanceEmail").value;
-
-const user=auth.currentUser;
-
-const dbRef=ref(db);
-
-const snapshot=await get(child(dbRef,'users/'+user.uid));
-
-const data=snapshot.val();
-
-if(amount>data.balance){
-alert("Insufficient balance");
-return;
-}
-
-const newBalance=data.balance-amount;
-
-await update(ref(db,'users/'+user.uid),{
-balance:newBalance
-});
-
-await set(ref(db,'withdraws/'+Date.now()),{
-uid:user.uid,
-email:data.email,
-binance:binance,
-amount:amount,
-status:"pending"
-});
-
-document.getElementById("balance").innerText=
-"$"+newBalance.toFixed(2);
-
-alert("Withdraw Request Sent");
-
-}
-
-</script>
+<script type="module" src="app.js"></script>
 
 </head>
-
 <body>
 
-<div id="welcomePage">
+<h1>💰 KING OF DOLLAR</h1>
 
-<div class="money">💵</div>
-<div class="money m2">🪙</div>
-<div class="money m3">💰</div>
-<div class="money m4">₿</div>
-<div class="money m5">💵</div>
-<div class="money m6">🪙</div>
+<button onclick="goAuth()">START</button>
 
-<h1>KING OF DOLLAR</h1>
+<div id="authPage" class="hidden">
 
-<button onclick="goAuth()">NEXT</button>
-
+<div id="loginBox" class="box">
+<h2>Login</h2>
+<input id="loginEmail" placeholder="Email">
+<input id="loginPass" type="password" placeholder="Password">
+<button onclick="login()">Login</button>
+<p onclick="showSignup()">Create Account</p>
 </div>
 
-<div id="authPage">
-
-<div class="box" id="loginBox">
-
-<h2>LOGIN</h2>
-
-<input type="email" id="loginEmail" placeholder="Email">
-
-<input type="password" id="loginPassword" placeholder="Password">
-
-<button onclick="login()">LOGIN</button>
-
-<p class="link" onclick="showSignup()">Create New Account</p>
-
-</div>
-
-<div class="box" id="signupBox">
-
-<h2>CREATE ACCOUNT</h2>
-
-<input type="text" id="signupName" placeholder="Full Name">
-
-<input type="text" id="signupUsername" placeholder="Username">
-
-<input type="email" id="signupEmail" placeholder="Email">
-
-<input type="password" id="signupPassword" placeholder="Password">
-
-<button onclick="signup()">CREATE ACCOUNT</button>
-
-<p class="link" onclick="showLogin()">Back To Login</p>
-
+<div id="signupBox" class="box hidden">
+<h2>Signup</h2>
+<input id="name" placeholder="Name">
+<input id="username" placeholder="Username">
+<input id="email" placeholder="Email">
+<input id="pass" type="password" placeholder="Password">
+<button onclick="signup()">Signup</button>
+<p onclick="showLogin()">Back</p>
 </div>
 
 </div>
 
-<div id="mainPage">
+<div id="mainPage" class="hidden">
 
-<div class="topBar">
-Welcome, <span id="welcomeUser"></span>
+<h2>Welcome <span id="user"></span></h2>
+
+<div class="card">
+<h1 id="balance">$0.00</h1>
 </div>
 
-<div class="balanceCard">
+<button onclick="watchAd()">WATCH AD</button>
 
-<h2 id="balance">$0.00</h2>
+<br><br>
 
-<p>Available Balance</p>
-
-</div>
-
-<button class="earnBtn" onclick="watchAd()">
-WATCH & EARN
-</button>
-
-<div class="walletBox">
-
-<h3>Withdraw</h3>
-
-<input type="number" id="withdrawAmount" placeholder="Amount">
-
-<input type="email" id="binanceEmail" placeholder="Binance Email">
-
+<input id="amount" type="number" placeholder="Withdraw">
 <button onclick="withdraw()">WITHDRAW</button>
 
 </div>
 
-</div>
-
-<div id="adPopup">
-
+<!-- AD -->
+<div id="adPopup" class="hidden">
 <div class="adBox">
-
-<h2>ADVERTISEMENT</h2>
-
+<h2>Advertisement</h2>
 <p>Wait <span id="timer">5</span>s</p>
-
-<button id="closeBtn" onclick="closeAd()">
-CLOSE
-</button>
-
+<button id="closeBtn" class="hidden" onclick="closeAd()">CLOSE</button>
 </div>
-
 </div>
 
 </body>

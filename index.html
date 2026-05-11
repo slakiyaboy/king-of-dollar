@@ -14,8 +14,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/fireba
 import {
 getAuth,
 createUserWithEmailAndPassword,
-signInWithEmailAndPassword,
-sendEmailVerification
+signInWithEmailAndPassword
 } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
 
 import {
@@ -48,7 +47,13 @@ document.getElementById("authPage").style.display="flex";
 }
 
 window.showSignup = function(){
+document.getElementById("loginBox").style.display="none";
 document.getElementById("signupBox").style.display="block";
+}
+
+window.showLogin = function(){
+document.getElementById("signupBox").style.display="none";
+document.getElementById("loginBox").style.display="block";
 }
 
 window.signup = async function(){
@@ -69,8 +74,6 @@ const userCredential=await createUserWithEmailAndPassword(auth,email,password);
 
 const user=userCredential.user;
 
-await sendEmailVerification(user);
-
 await set(ref(db,'users/'+user.uid),{
 name:name,
 username:username,
@@ -78,7 +81,12 @@ email:email,
 balance:0
 });
 
-alert("Account created. Verify your email.");
+document.getElementById("authPage").style.display="none";
+document.getElementById("mainPage").style.display="block";
+
+document.getElementById("welcomeUser").innerText=username;
+
+document.getElementById("balance").innerText="$0.00";
 
 }catch(error){
 alert(error.message);
@@ -96,11 +104,6 @@ try{
 const userCredential=await signInWithEmailAndPassword(auth,email,password);
 
 const user=userCredential.user;
-
-if(!user.emailVerified){
-alert("Verify your email first");
-return;
-}
 
 const dbRef=ref(db);
 
@@ -123,7 +126,7 @@ document.getElementById("balance").innerText=
 });
 
 }catch(error){
-alert(error.message);
+alert("Wrong Email or Password");
 }
 
 }
@@ -246,7 +249,7 @@ alert("Withdraw Request Sent");
 
 <div id="authPage">
 
-<div class="box">
+<div class="box" id="loginBox">
 
 <h2>LOGIN</h2>
 
@@ -256,13 +259,13 @@ alert("Withdraw Request Sent");
 
 <button onclick="login()">LOGIN</button>
 
-<p class="link" onclick="showSignup()">Create Account</p>
+<p class="link" onclick="showSignup()">Create New Account</p>
 
 </div>
 
 <div class="box" id="signupBox">
 
-<h2>SIGN UP</h2>
+<h2>CREATE ACCOUNT</h2>
 
 <input type="text" id="signupName" placeholder="Full Name">
 
@@ -273,6 +276,8 @@ alert("Withdraw Request Sent");
 <input type="password" id="signupPassword" placeholder="Password">
 
 <button onclick="signup()">CREATE ACCOUNT</button>
+
+<p class="link" onclick="showLogin()">Back To Login</p>
 
 </div>
 

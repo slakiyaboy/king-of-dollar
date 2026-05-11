@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
 <title>King Of Dollar</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <link rel="stylesheet" href="style.css">
 <script type="module" src="app.js"></script>
-</head>
 
+</head>
 <body>
 
 <!-- 🎬 WELCOME -->
@@ -16,7 +18,7 @@
 </div>
 
 <!-- AUTH -->
-<div id="authPage" class="hidden">
+<div id="authPage">
 
 <div id="loginBox">
 <h2>Login</h2>
@@ -26,8 +28,8 @@
 <p onclick="showSignup()">Create Account</p>
 </div>
 
-<div id="signupBox" class="hidden">
-<h2>Create Account</h2>
+<div id="signupBox" style="display:none">
+<h2>Signup</h2>
 <input id="name" placeholder="Name">
 <input id="username" placeholder="Username">
 <input id="email" placeholder="Email">
@@ -39,7 +41,7 @@
 </div>
 
 <!-- MAIN -->
-<div id="mainPage" class="hidden">
+<div id="mainPage" style="display:none">
 
 <h2>Welcome <span id="user"></span></h2>
 
@@ -55,10 +57,9 @@
 </div>
 
 <!-- AD -->
-<div id="ad" class="hidden">
-<p>Ad Running...</p>
-<p>Wait <span id="t">5</span>s</p>
-<button id="close" class="hidden" onclick="reward()">CLOSE</button>
+<div id="ad" style="display:none">
+<p>Ad Running... <span id="t">5</span></p>
+<button id="close" style="display:none" onclick="reward()">CLOSE</button>
 </div>
 
 </body>

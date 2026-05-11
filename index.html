@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Earning App</title>
+<title>King Of Dollar</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="style.css">
 <script type="module" src="app.js"></script>
@@ -9,20 +9,32 @@
 
 <body>
 
-<!-- 🎬 WELCOME SCREEN -->
+<!-- 🎬 WELCOME -->
 <div id="welcome">
-<h1 class="fade">👋 WELCOME</h1>
-<p class="fade2">KING OF EARN APP</p>
+<h1 class="title">💰 KING OF DOLLAR</h1>
+<p class="sub">Earn Smart. Live Better.</p>
 </div>
 
 <!-- AUTH -->
 <div id="authPage" class="hidden">
 
+<div id="loginBox">
+<h2>Login</h2>
 <input id="email" placeholder="Email">
 <input id="pass" type="password" placeholder="Password">
-
 <button onclick="login()">Login</button>
+<p onclick="showSignup()">Create Account</p>
+</div>
+
+<div id="signupBox" class="hidden">
+<h2>Create Account</h2>
+<input id="name" placeholder="Name">
+<input id="username" placeholder="Username">
+<input id="email" placeholder="Email">
+<input id="pass" type="password" placeholder="Password">
 <button onclick="signup()">Signup</button>
+<p onclick="showLogin()">Back to Login</p>
+</div>
 
 </div>
 

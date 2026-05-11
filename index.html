@@ -1,66 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>King Of Dollar</title>
+<title>Earning App</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="style.css">
-
 <script type="module" src="app.js"></script>
-
 </head>
+
 <body>
 
-<h1>💰 KING OF DOLLAR</h1>
+<!-- 🎬 WELCOME SCREEN -->
+<div id="welcome">
+<h1 class="fade">👋 WELCOME</h1>
+<p class="fade2">KING OF EARN APP</p>
+</div>
 
-<button onclick="goAuth()">START</button>
-
+<!-- AUTH -->
 <div id="authPage" class="hidden">
 
-<div id="loginBox" class="box">
-<h2>Login</h2>
-<input id="loginEmail" placeholder="Email">
-<input id="loginPass" type="password" placeholder="Password">
-<button onclick="login()">Login</button>
-<p onclick="showSignup()">Create Account</p>
-</div>
-
-<div id="signupBox" class="box hidden">
-<h2>Signup</h2>
-<input id="name" placeholder="Name">
-<input id="username" placeholder="Username">
 <input id="email" placeholder="Email">
 <input id="pass" type="password" placeholder="Password">
+
+<button onclick="login()">Login</button>
 <button onclick="signup()">Signup</button>
-<p onclick="showLogin()">Back</p>
-</div>
 
 </div>
 
+<!-- MAIN -->
 <div id="mainPage" class="hidden">
 
 <h2>Welcome <span id="user"></span></h2>
 
-<div class="card">
 <h1 id="balance">$0.00</h1>
-</div>
 
 <button onclick="watchAd()">WATCH AD</button>
 
 <br><br>
 
 <input id="amount" type="number" placeholder="Withdraw">
-<button onclick="withdraw()">WITHDRAW</button>
+<button onclick="withdraw()">Withdraw</button>
 
 </div>
 
 <!-- AD -->
-<div id="adPopup" class="hidden">
-<div class="adBox">
-<h2>Advertisement</h2>
-<p>Wait <span id="timer">5</span>s</p>
-<button id="closeBtn" class="hidden" onclick="closeAd()">CLOSE</button>
-</div>
+<div id="ad" class="hidden">
+<p>Ad Running...</p>
+<p>Wait <span id="t">5</span>s</p>
+<button id="close" class="hidden" onclick="reward()">CLOSE</button>
 </div>
 
 </body>

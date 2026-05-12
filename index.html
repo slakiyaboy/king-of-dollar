@@ -17,21 +17,19 @@
 
 <body>
 
-<!-- WELCOME -->
-
+<!-- 🎬 WELCOME -->
 <div id="welcome">
 
 <h1 class="logo">💰 KING OF DOLLAR</h1>
 
-<p>Secure Earn Platform</p>
+<p>Secure Earning Platform</p>
 
 </div>
 
-<!-- AUTH -->
-
+<!-- 🔐 AUTH -->
 <div id="authPage" style="display:none;">
 
-<div class="card">
+<div class="authBox">
 
 <h2>Login / Signup</h2>
 
@@ -47,22 +45,15 @@
 
 </div>
 
-<!-- MAIN -->
-
+<!-- 🏠 MAIN -->
 <div id="mainPage" style="display:none;">
-
-<div class="top">
 
 <h2>
 Welcome,
 <span id="user"></span>
 </h2>
 
-<button onclick="logout()">LOGOUT</button>
-
-</div>
-
-<div class="balanceCard">
+<div class="balanceBox">
 
 <h1 id="balance">$0.00</h1>
 
@@ -70,34 +61,39 @@ Welcome,
 
 </div>
 
-<button class="earnBtn" onclick="watchAd()">
+<button
+id="watchBtn"
+class="earnBtn"
+onclick="watchAd()">
+
 WATCH AD & EARN
+
 </button>
 
-<p id="cooldown"></p>
+<p id="cooldownText"></p>
 
-<div class="withdrawCard">
+<div class="withdrawBox">
 
 <h3>Withdraw</h3>
 
-<input type="number" id="amount" placeholder="Amount">
+<input
+type="number"
+id="amount"
+placeholder="Amount">
 
-<button onclick="withdraw()">SEND REQUEST</button>
-
-</div>
-
-<div class="historyCard">
-
-<h3>Transaction History</h3>
-
-<div id="history"></div>
+<button onclick="withdraw()">
+SEND REQUEST
+</button>
 
 </div>
 
+<button class="logoutBtn" onclick="logout()">
+LOGOUT
+</button>
+
 </div>
 
-<!-- AD -->
-
+<!-- 🎬 AD -->
 <div id="ad" style="display:none;">
 
 <div class="adBox">
@@ -105,9 +101,8 @@ WATCH AD & EARN
 <h2>ADVERTISEMENT</h2>
 
 <p>
-Wait
-<span id="t">5</span>
-seconds
+Please wait
+<span id="t">5</span>s
 </p>
 
 <button

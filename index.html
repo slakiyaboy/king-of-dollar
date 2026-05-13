@@ -48,6 +48,9 @@
 <!-- 🏠 MAIN -->
 <div id="mainPage" style="display:none;">
 
+<!-- HOME PAGE -->
+<div id="homePage">
+
 <h2>
 Welcome,
 <span id="user"></span>
@@ -72,6 +75,35 @@ WATCH AD & EARN
 
 <p id="cooldownText"></p>
 
+<!-- 📋 SURVEYS -->
+
+<div class="surveyBox">
+Survey 1
+</div>
+
+<div class="surveyBox">
+Survey 2
+</div>
+
+<div class="surveyBox">
+Survey 3
+</div>
+
+</div>
+
+<!-- 👛 WALLET -->
+<div id="walletPage" style="display:none;">
+
+<h2>Wallet</h2>
+
+<div class="balanceBox">
+
+<h1 id="walletBalance">$0.00</h1>
+
+<p>Total Balance</p>
+
+</div>
+
 <div class="withdrawBox">
 
 <h3>Withdraw</h3>
@@ -90,6 +122,21 @@ SEND REQUEST
 <button class="logoutBtn" onclick="logout()">
 LOGOUT
 </button>
+
+</div>
+
+<!-- 📱 BOTTOM NAV -->
+<div class="bottomNav">
+
+<button onclick="showHome()">
+🏠 Home
+</button>
+
+<button onclick="showWallet()">
+👛 Wallet
+</button>
+
+</div>
 
 </div>
 

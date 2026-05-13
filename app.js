@@ -74,7 +74,7 @@ authPage.style.display="block";
 
 };
 
-/* 🔐 SESSION CHECK */
+/* 🔐 SESSION */
 
 onAuthStateChanged(auth, async (user)=>{
 
@@ -196,7 +196,7 @@ authPage.style.display="block";
 
 /* 🏠 MAIN */
 
-function showMain(name,balance){
+function showMain(name,balanceValue){
 
 authPage.style.display="none";
 
@@ -205,7 +205,10 @@ mainPage.style.display="block";
 document.getElementById("user").innerText=name;
 
 document.getElementById("balance").innerText=
-"$"+Number(balance).toFixed(2);
+"$"+Number(balanceValue).toFixed(2);
+
+document.getElementById("walletBalance").innerText=
+"$"+Number(balanceValue).toFixed(2);
 
 }
 
@@ -230,7 +233,7 @@ const data = snapshot.val();
 
 const now = Date.now();
 
-/* ⛔ 30s cooldown */
+/* ⛔ COOLDOWN */
 
 if(now - data.lastReward < 30000){
 
@@ -294,21 +297,9 @@ const data = snapshot.val();
 
 const now = Date.now();
 
-/* ⛔ DOUBLE CHECK */
-
 if(now - data.lastReward < 30000){
 
 alert("Cooldown Active");
-
-return;
-
-}
-
-/* ⛔ DAILY LIMIT */
-
-if(data.totalRewards >= 100){
-
-alert("Daily Limit Reached");
 
 return;
 
@@ -327,7 +318,10 @@ totalRewards:data.totalRewards+1
 
 });
 
-balance.innerText=
+document.getElementById("balance").innerText=
+"$"+newBalance.toFixed(2);
+
+document.getElementById("walletBalance").innerText=
 "$"+newBalance.toFixed(2);
 
 ad.style.display="none";
@@ -366,8 +360,6 @@ await get(child(ref(db),"users/"+user.uid));
 
 const data = snapshot.val();
 
-/* ⛔ MINIMUM */
-
 if(amount < 1){
 
 alert("Minimum withdraw is $1");
@@ -375,8 +367,6 @@ alert("Minimum withdraw is $1");
 return;
 
 }
-
-/* ⛔ BALANCE */
 
 if(amount > data.balance){
 
@@ -386,34 +376,7 @@ return;
 
 }
 
-/* ⛔ DUPLICATE REQUEST CHECK */
-
-const withdrawRef = ref(db,"withdraws");
-
-const withdrawSnap = await get(withdrawRef);
-
-if(withdrawSnap.exists()){
-
-const all = withdrawSnap.val();
-
-for(let id in all){
-
-if(
-all[id].uid === user.uid &&
-all[id].status === "pending"
-){
-
-alert("Pending request already exists");
-
-return;
-
-}
-
-}
-
-}
-
-/* UPDATE BALANCE */
+/* UPDATE */
 
 const newBalance =
 data.balance - amount;
@@ -440,9 +403,32 @@ createdAt:Date.now()
 
 });
 
-balance.innerText=
+document.getElementById("balance").innerText=
+"$"+newBalance.toFixed(2);
+
+document.getElementById("walletBalance").innerText=
 "$"+newBalance.toFixed(2);
 
 alert("Withdraw Request Sent");
+
+};
+
+/* 🏠 HOME */
+
+window.showHome = ()=>{
+
+document.getElementById("homePage").style.display="block";
+
+document.getElementById("walletPage").style.display="none";
+
+};
+
+/* 👛 WALLET */
+
+window.showWallet = ()=>{
+
+document.getElementById("homePage").style.display="none";
+
+document.getElementById("walletPage").style.display="block";
 
 };

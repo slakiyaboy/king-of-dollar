@@ -1,149 +1,448 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+
 import {
+
 getAuth,
+
 createUserWithEmailAndPassword,
-signInWithEmailAndPassword
+
+signInWithEmailAndPassword,
+
+signOut,
+
+onAuthStateChanged
+
 } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
 
 import {
+
 getDatabase,
+
 ref,
+
 set,
+
 get,
+
 child,
-update
+
+update,
+
+push
+
 } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-database.js";
 
+/* 🔥 FIREBASE */
+
 const firebaseConfig = {
-apiKey:"YOUR_KEY",
-authDomain:"YOUR_DOMAIN",
-databaseURL:"YOUR_DB",
-projectId:"YOUR_ID"
+
+apiKey: "AIzaSyAifKKpluXjlOOjnhCSL2fSCj4urp5ZFN4",
+
+authDomain: "king-of-dollar.firebaseapp.com",
+
+databaseURL: "https://king-of-dollar-default-rtdb.asia-southeast1.firebasedatabase.app",
+
+projectId: "king-of-dollar",
+
+storageBucket: "king-of-dollar.firebasestorage.app",
+
+messagingSenderId: "289594893517",
+
+appId: "1:289594893517:web:c12a017bc02e06ca7cb584",
+
+measurementId: "G-LHHS2J9F20"
+
 };
 
 const app = initializeApp(firebaseConfig);
+
 const auth = getAuth(app);
+
 const db = getDatabase(app);
 
-/* 🎬 WELCOME → AUTO SWITCH */
+/* 🎬 START */
+
 window.onload = () => {
+
 setTimeout(()=>{
-document.getElementById("welcome").style.display="none";
-document.getElementById("authPage").classList.remove("hidden");
+
+welcome.style.display="none";
+
+authPage.style.display="block";
+
 },3000);
+
+};
+
+/* 🔐 SESSION CHECK */
+
+onAuthStateChanged(auth, async (user)=>{
+
+if(user){
+
+const snapshot =
+await get(child(ref(db),"users/"+user.uid));
+
+if(snapshot.exists()){
+
+const data = snapshot.val();
+
+showMain(data.email,data.balance);
+
 }
 
-/* 🔄 SWITCH LOGIN / SIGNUP */
-window.showSignup = ()=>{
-loginBox.classList.add("hidden");
-signupBox.classList.remove("hidden");
 }
 
-window.showLogin = ()=>{
-signupBox.classList.add("hidden");
-loginBox.classList.remove("hidden");
-}
+});
 
-/* SIGNUP */
+/* 🟢 SIGNUP */
+
 window.signup = async ()=>{
 
-const user = await createUserWithEmailAndPassword(auth,email.value,pass.value);
+try{
 
-await set(ref(db,"users/"+user.user.uid),{
-name:name.value,
-username:username.value,
-balance:0
-});
+if(pass.value.length < 6){
 
-showMain(username.value,0);
+alert("Password too short");
+
+return;
 
 }
 
-/* LOGIN */
+const userCredential =
+
+await createUserWithEmailAndPassword(
+
+auth,
+
+email.value,
+
+pass.value
+
+);
+
+const user = userCredential.user;
+
+await set(ref(db,"users/"+user.uid),{
+
+email:email.value,
+
+balance:0,
+
+lastReward:0,
+
+totalRewards:0,
+
+createdAt:Date.now()
+
+});
+
+showMain(email.value,0);
+
+}catch(error){
+
+alert(error.message);
+
+}
+
+};
+
+/* 🔵 LOGIN */
+
 window.login = async ()=>{
 
-const user = await signInWithEmailAndPassword(auth,email.value,pass.value);
+try{
 
-const snap = await get(child(ref(db),"users/"+user.user.uid));
-const data = snap.val();
+const userCredential =
 
-showMain(data.username,data.balance);
+await signInWithEmailAndPassword(
+
+auth,
+
+email.value,
+
+pass.value
+
+);
+
+const user = userCredential.user;
+
+const snapshot =
+await get(child(ref(db),"users/"+user.uid));
+
+const data = snapshot.val();
+
+showMain(data.email,data.balance);
+
+}catch(error){
+
+alert("Login Failed");
 
 }
 
-/* MAIN SCREEN */
+};
+
+/* 🚪 LOGOUT */
+
+window.logout = async ()=>{
+
+await signOut(auth);
+
+mainPage.style.display="none";
+
+authPage.style.display="block";
+
+};
+
+/* 🏠 MAIN */
+
 function showMain(name,balance){
 
-document.getElementById("authPage").classList.add("hidden");
-document.getElementById("mainPage").classList.remove("hidden");
+authPage.style.display="none";
+
+mainPage.style.display="block";
 
 document.getElementById("user").innerText=name;
-document.getElementById("balance").innerText="$"+balance;
+
+document.getElementById("balance").innerText=
+"$"+Number(balance).toFixed(2);
 
 }
 
-/* AD */
-window.watchAd = ()=>{
+/* 🎬 WATCH AD */
 
-ad.classList.remove("hidden");
+window.watchAd = async ()=>{
 
-let t=5;
-document.getElementById("t").innerText=t;
+const user = auth.currentUser;
 
-let x=setInterval(()=>{
-t--;
-document.getElementById("t").innerText=t;
+if(!user){
 
-if(t<=0){
-clearInterval(x);
-close.classList.remove("hidden");
+alert("Login Required");
+
+return;
+
 }
+
+const snapshot =
+await get(child(ref(db),"users/"+user.uid));
+
+const data = snapshot.val();
+
+const now = Date.now();
+
+/* ⛔ 30s cooldown */
+
+if(now - data.lastReward < 30000){
+
+const left = Math.ceil(
+(30000 - (now - data.lastReward))/1000
+);
+
+cooldownText.innerText =
+"Wait "+left+" seconds";
+
+return;
+
+}
+
+cooldownText.innerText="";
+
+ad.style.display="flex";
+
+close.style.display="none";
+
+let time = 5;
+
+t.innerText=time;
+
+const interval = setInterval(()=>{
+
+time--;
+
+t.innerText=time;
+
+if(time<=0){
+
+clearInterval(interval);
+
+close.style.display="block";
+
+}
+
 },1000);
 
-}
+};
 
-/* REWARD */
+/* 💰 REWARD */
+
 window.reward = async ()=>{
 
-ad.classList.add("hidden");
-
 const user = auth.currentUser;
 
-const snap = await get(child(ref(db),"users/"+user.uid));
-const data = snap.val();
+if(!user){
 
-let newBal = data.balance + 0.01;
+alert("Unauthorized");
 
-await update(ref(db,"users/"+user.uid),{
-balance:newBal
-});
-
-balance.innerText="$"+newBal;
+return;
 
 }
 
-/* WITHDRAW */
+const snapshot =
+await get(child(ref(db),"users/"+user.uid));
+
+const data = snapshot.val();
+
+const now = Date.now();
+
+/* ⛔ DOUBLE CHECK */
+
+if(now - data.lastReward < 30000){
+
+alert("Cooldown Active");
+
+return;
+
+}
+
+/* ⛔ DAILY LIMIT */
+
+if(data.totalRewards >= 100){
+
+alert("Daily Limit Reached");
+
+return;
+
+}
+
+const newBalance =
+Number(data.balance)+0.01;
+
+await update(ref(db,"users/"+user.uid),{
+
+balance:newBalance,
+
+lastReward:now,
+
+totalRewards:data.totalRewards+1
+
+});
+
+balance.innerText=
+"$"+newBalance.toFixed(2);
+
+ad.style.display="none";
+
+alert("$0.01 Added");
+
+};
+
+/* 📤 WITHDRAW */
+
 window.withdraw = async ()=>{
 
+const amount =
+Number(document.getElementById("amount").value);
+
+if(amount <= 0){
+
+alert("Invalid Amount");
+
+return;
+
+}
+
 const user = auth.currentUser;
 
-const snap = await get(child(ref(db),"users/"+user.uid));
-const data = snap.val();
+if(!user){
 
-if(Number(amount.value) > data.balance){
-alert("No balance");
+alert("Unauthorized");
+
 return;
+
 }
+
+const snapshot =
+await get(child(ref(db),"users/"+user.uid));
+
+const data = snapshot.val();
+
+/* ⛔ MINIMUM */
+
+if(amount < 1){
+
+alert("Minimum withdraw is $1");
+
+return;
+
+}
+
+/* ⛔ BALANCE */
+
+if(amount > data.balance){
+
+alert("Insufficient Balance");
+
+return;
+
+}
+
+/* ⛔ DUPLICATE REQUEST CHECK */
+
+const withdrawRef = ref(db,"withdraws");
+
+const withdrawSnap = await get(withdrawRef);
+
+if(withdrawSnap.exists()){
+
+const all = withdrawSnap.val();
+
+for(let id in all){
+
+if(
+all[id].uid === user.uid &&
+all[id].status === "pending"
+){
+
+alert("Pending request already exists");
+
+return;
+
+}
+
+}
+
+}
+
+/* UPDATE BALANCE */
+
+const newBalance =
+data.balance - amount;
 
 await update(ref(db,"users/"+user.uid),{
-balance:data.balance - Number(amount.value)
+
+balance:newBalance
+
 });
 
-await set(ref(db,"withdraws/"+Date.now()),{
+/* SAVE REQUEST */
+
+await push(ref(db,"withdraws"),{
+
 uid:user.uid,
-amount:amount.value,
-status:"pending"
+
+email:data.email,
+
+amount:amount,
+
+status:"pending",
+
+createdAt:Date.now()
+
 });
 
-alert("Sent");
-}
+balance.innerText=
+"$"+newBalance.toFixed(2);
+
+alert("Withdraw Request Sent");
+
+};

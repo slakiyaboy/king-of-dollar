@@ -10,7 +10,11 @@ color:white;
 
 text-align:center;
 
+padding-bottom:80px;
+
 }
+
+/* 🎬 WELCOME */
 
 #welcome{
 
@@ -46,20 +50,6 @@ animation-delay:2s;
 
 font-size:30px;
 
-animation:pop 1.5s ease;
-
-}
-
-@keyframes pop{
-
-from{
-transform:scale(0);
-}
-
-to{
-transform:scale(1);
-}
-
 }
 
 @keyframes fadeOut{
@@ -73,6 +63,8 @@ visibility:hidden;
 }
 
 }
+
+/* 🔐 AUTH */
 
 .authBox{
 
@@ -98,6 +90,8 @@ font-size:16px;
 
 }
 
+/* 🔘 BUTTONS */
+
 button{
 
 padding:12px 20px;
@@ -116,6 +110,8 @@ cursor:pointer;
 
 }
 
+/* 💰 BALANCE */
+
 .balanceBox{
 
 background:#222;
@@ -124,9 +120,11 @@ padding:20px;
 
 margin:20px;
 
-border-radius:12px;
+border-radius:15px;
 
 }
+
+/* 🟢 EARN */
 
 .earnBtn{
 
@@ -138,6 +136,24 @@ font-size:18px;
 
 }
 
+/* 📋 SURVEY */
+
+.surveyBox{
+
+background:#222;
+
+margin:15px;
+
+padding:20px;
+
+border-radius:12px;
+
+font-size:18px;
+
+}
+
+/* 👛 WALLET */
+
 .withdrawBox{
 
 background:#222;
@@ -146,7 +162,7 @@ padding:20px;
 
 margin:20px;
 
-border-radius:12px;
+border-radius:15px;
 
 }
 
@@ -157,6 +173,40 @@ background:red;
 color:white;
 
 }
+
+/* 📱 NAVIGATION */
+
+.bottomNav{
+
+position:fixed;
+
+bottom:0;
+
+left:0;
+
+width:100%;
+
+background:#222;
+
+display:flex;
+
+justify-content:space-around;
+
+padding:10px 0;
+
+}
+
+.bottomNav button{
+
+background:none;
+
+color:white;
+
+font-size:16px;
+
+}
+
+/* 🎬 AD */
 
 #ad{
 
